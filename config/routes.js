@@ -1,6 +1,7 @@
 const userController = require('./../controllers/user');
 const homeController = require('./../controllers/home');
 const articleController = require('./../controllers/article');
+const footerController = require('./../controllers/footer');
 
 module.exports = (app) => {
     //home
@@ -31,5 +32,18 @@ module.exports = (app) => {
     //delete article
     app.get('/article/delete/:id', articleController.deleteGet);
     app.post('/article/delete/:id', articleController.deletePost);
+
+    //contact page
+    app.get('/footer/contact', footerController.contactGet);
+
+    //about page
+    app.get('/footer/about', footerController.aboutGet);
+
+    //privacy page
+    app.get('/footer/privacy', footerController.privacyGet);
+
+    //rules page
+    app.get('/footer/rules', footerController.rulesGet);
+
 };
 

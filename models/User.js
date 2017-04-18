@@ -56,6 +56,7 @@ module.exports = User;
 module.exports.seedAdmin = () => {
     const Role = require('mongoose').model('Role');
     const User = require('mongoose').model('User');
+    const encryption = require('./../utilities/encryption');
 
     let email = 'admin@softuni.bg';
     User.findOne({email: email}).then(admin => {

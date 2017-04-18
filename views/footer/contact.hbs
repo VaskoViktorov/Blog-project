@@ -1,0 +1,43 @@
+<div class="container body-content">
+    <style>
+        #map {
+            height: 300px;
+            width: 500px;
+        }
+    </style>
+
+<h3>Contact us</h3>
+                <br>
+                <br>
+<h4>ONLINE CUSTOMER SERVICE</h4>
+                <p><br>
+                If you’d like to contact us over the phone:<br>
+                <br>
+                We work from <b>8AM</b> to <b>11PM</b>, <b>7</b> days a week.<br>
+                <br>
+                <b> +359-123-4567</b> </p>
+                <h4><br><br>Postal and Physical address:<br></h4>
+                    <p><br>Somewhere in the castle "Baba Vida" ,<br>
+                    Vidin,<br>
+                    Bulgaria<br><br><br>
+
+                </p>
+</p>
+<div id="map"></div>
+<script>
+    function initMap() {
+        var BabaVidaCastle = {lat: 43.993061, lng: 22.886421};
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 17,
+            center: BabaVidaCastle
+        });
+        var marker = new google.maps.Marker({
+            position: BabaVidaCastle,
+            map: map
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXdv6bhQ40F9cJjdRB0pG8FefcnFGK_uk&callback=initMap">
+</script>
+</div>

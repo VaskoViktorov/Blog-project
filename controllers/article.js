@@ -56,6 +56,7 @@ module.exports = {
 
         })
     },
+
     details: (req, res) => {
         let id = req.params.id;
 
@@ -93,6 +94,7 @@ module.exports = {
             })
         })
     },
+
     editPost: (req, res) => {
         let id = req.params.id;
         let articleArgs = req.body;
@@ -101,7 +103,7 @@ module.exports = {
         if(!articleArgs.title){
             errorMsg = 'Article title cannot be empty!';
         } else if (!articleArgs.content){
-            errorMsg ='Article content cannot be empty';
+            errorMsg ='Article content cannot be empty!';
         }
 
         if (errorMsg){
@@ -113,6 +115,7 @@ module.exports = {
                 })
         }
     },
+
     deleteGet: ( req, res) => {
     let id = req.params.id;
 
@@ -134,6 +137,7 @@ module.exports = {
         })
     })
     },
+
     deletePost: (req, res) => {
         let id = req.params.id;
         Article.findOneAndRemove({_id: id}).populate('author').then(article => {

@@ -106,4 +106,6 @@ module.exports = {
         req.logOut();
         res.redirect('/');
     }
+
+
 };
