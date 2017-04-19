@@ -7,8 +7,12 @@
                         <h2>{{this.title}}</h2>
                     </header>
 
-                    <p>{{substring this.content 0 500}}
+                    <p>
+                        {{substring this.content 0 500}}
                     </p>
+                    {{#if imagePath}}
+                        <img src="{{this.imagePath}}" width="150" alt="Article Image">
+                    {{/if}}
 
                     <small class="author">
                         {{this.author.fullName}}

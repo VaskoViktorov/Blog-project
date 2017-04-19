@@ -26,10 +26,13 @@ module.exports = {
         let image = req.files.image;
 
         if(image){
+
             let filenameAndExtension = image.name;
 
             let filename = filenameAndExtension.substring(0, filenameAndExtension.lastIndexOf('.'));
             let extension = filenameAndExtension.substring(filenameAndExtension.lastIndexOf('.')+1);
+
+            if(extension === 'png' || extension === 'jpg' || extension === 'gif'){
 
             let randomChars = require('./../utilities/encryption').generateSalt().substring(0,5).replace(/\//g, 'x');
 
@@ -40,7 +43,12 @@ module.exports = {
                 }
             });
             articleArgs.imagePath = `/images/${finalFileName}`;
-        }
+
+        }else{
+            errorMsg = 'Only .png, .jpg and .gif are accepted!';
+            res.render('article/create', {error: errorMsg});
+            return;
+        }}
 
         articleArgs.author = req.user.id;
 
@@ -96,6 +104,7 @@ module.exports = {
     },
 
     editPost: (req, res) => {
+
         let id = req.params.id;
         let articleArgs = req.body;
 
@@ -109,10 +118,38 @@ module.exports = {
         if (errorMsg){
             res.render('article/edit', {error: errorMsg})
         } else  {
+            let image = req.files.image;
+            if(image){
+
+                let filenameAndExtension = image.name;
+
+                let filename = filenameAndExtension.substring(0, filenameAndExtension.lastIndexOf('.'));
+                let extension = filenameAndExtension.substring(filenameAndExtension.lastIndexOf('.')+1);
+                if(extension === 'png' || extension === 'jpg'|| extension === 'gif'){
+                let randomChars = require('./../utilities/encryption').generateSalt().substring(0,5).replace(/\//g, 'x');
+
+                let finalFileName = `${filename}_${randomChars}.${extension}`;
+                image.mv(`./public/images/${finalFileName}`, err =>{
+                    if(err){
+                        console.log(err.message);
+                    }
+                });
+                articleArgs.imagePath = `/images/${finalFileName}`;
+                Article.update({_id: id}, {$set: {title: articleArgs.title, content: articleArgs.content, imagePath: articleArgs.imagePath}})
+                    .then(updateStatus => {
+                        res.redirect(`/article/details/${id}`);
+                    })}else{
+                    errorMsg = 'Only .png, .jpg and .gif are accepted!';
+                    res.render('article/edit', {error: errorMsg});
+
+                }
+
+            }
+            else{
             Article.update({_id: id}, {$set: {title: articleArgs.title, content: articleArgs.content}})
                 .then(updateStatus => {
                     res.redirect(`/article/details/${id}`);
-                })
+                })}
         }
     },
 
