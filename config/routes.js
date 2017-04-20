@@ -2,7 +2,7 @@ const userController = require('./../controllers/user');
 const homeController = require('./../controllers/home');
 const articleController = require('./../controllers/article');
 const footerController = require('./../controllers/footer');
-
+const accountController = require('./../controllers/account');
 module.exports = (app) => {
     //home
     app.get('/', homeController.index);
@@ -45,5 +45,7 @@ module.exports = (app) => {
     //rules page
     app.get('/footer/rules', footerController.rulesGet);
 
+    //rules page
+    app.get('/account/account', accountController.accountGet);
 };
 

@@ -12,6 +12,15 @@
                 {{#if article.imagePath}}
                <img src="{{article.imagePath}}" width="400" alt="Article Image">
                 {{/if}}
+                {{#if article.edit}}
+                    <small class="author">
+                        <br><p>At {{article.editDate}} the article was edited.</p>
+                    </small>
+                {{else}}
+                    <small class="author">
+                        <br><p>At {{article.date}} the article was created.</p>
+                    </small>
+                {{/if}}
                 <small class="author">
                     {{article.author.fullName}}
                 </small>

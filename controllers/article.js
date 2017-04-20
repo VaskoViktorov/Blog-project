@@ -1,4 +1,5 @@
 const Article = require('mongoose').model('Article');
+const User = require('mongoose').model('User');
 
 module.exports = {
     createGet: (req, res) =>{
@@ -49,7 +50,7 @@ module.exports = {
             res.render('article/create', {error: errorMsg});
             return;
         }}
-
+        articleArgs.edit = false;
         articleArgs.author = req.user.id;
 
         Article.create(articleArgs).then(article =>{
@@ -135,7 +136,10 @@ module.exports = {
                     }
                 });
                 articleArgs.imagePath = `/images/${finalFileName}`;
-                Article.update({_id: id}, {$set: {title: articleArgs.title, content: articleArgs.content, imagePath: articleArgs.imagePath}})
+                articleArgs.edit = 'true';
+                articleArgs.editDate = Date.now();
+
+                Article.update({_id: id}, {$set: {title: articleArgs.title, content: articleArgs.content, imagePath: articleArgs.imagePath, edit: articleArgs.edit,editDate: articleArgs.editDate}})
                     .then(updateStatus => {
                         res.redirect(`/article/details/${id}`);
                     })}else{
@@ -146,7 +150,10 @@ module.exports = {
 
             }
             else{
-            Article.update({_id: id}, {$set: {title: articleArgs.title, content: articleArgs.content}})
+                articleArgs.edit = 'true';
+                articleArgs.editDate = Date.now();
+
+                Article.update({_id: id}, {$set: {title: articleArgs.title, content: articleArgs.content, edit: articleArgs.edit, editDate: articleArgs.editDate}})
                 .then(updateStatus => {
                     res.redirect(`/article/details/${id}`);
                 })}
