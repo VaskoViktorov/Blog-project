@@ -37,13 +37,7 @@ module.exports = {
 
                     userObject.roles = roles;
                     User.create(userObject).then(user => {
-                        role.users.push(user.id);
-                        role.save(err =>{
-                            if(err){
-                                registerArgs.error = err.message;
-                                res.render('user/register', registerArgs);
-                            }
-                            else {
+                        user.prepareInsert();
                                 req.logIn(user, (err) => {
                                    if(err){
                                        registerArgs.error = err.message;
@@ -52,21 +46,9 @@ module.exports = {
                                    }
                                    res.redirect('/');
                                 })
-                            }
-                        })
-                    })
+                    });
                 });
-                User.create(userObject).then(user => {
-                    req.logIn(user, (err) => {
-                        if (err) {
-                            registerArgs.error = err.message;
-                            res.render('user/register', registerArgs);
-                            return;
-                        }
 
-                        res.redirect('/')
-                    })
-                })
             }
         })
     },

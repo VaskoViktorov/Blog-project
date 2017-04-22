@@ -1,19 +1,9 @@
 const mongoose = require('mongoose');
-var Role = require("mongoose/lib/model.js");
 mongoose.Promise = global.Promise;
 
-module.exports.initialize = () =>{
-    Role.findOne({name: 'User'}).then(role =>{
-        if(!role){
-            Role.create({name: 'User'})
-        }
-    });
-    Role.findOne({name: 'Admin'}).then(role =>{
-        if(!role){
-            Role.create({name: 'Admin'})
-        }
-    });
-};
+require('./../models/Role').initialize();
+require('./../models/User').seedAdmin();
+require('./../models/Article');
 
 module.exports = (config) => {
     mongoose.connect(config.connectionString);
@@ -31,9 +21,7 @@ module.exports = (config) => {
 
 
 
-    require('./../models/Role').initialize();
-    require('./../models/User').seedAdmin();
-    require('./../models/Article');
+
 };
 
 

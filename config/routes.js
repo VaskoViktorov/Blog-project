@@ -3,6 +3,8 @@ const homeController = require('./../controllers/home');
 const articleController = require('./../controllers/article');
 const footerController = require('./../controllers/footer');
 const accountController = require('./../controllers/account');
+const adminController = require('./../controllers/admin/admin');
+
 module.exports = (app) => {
     //home
     app.get('/', homeController.index);
@@ -47,5 +49,29 @@ module.exports = (app) => {
 
     //rules page
     app.get('/account/account', accountController.accountGet);
+
+    //admin panels
+    app.use((req, res, next) => {
+        if(req.isAuthenticated()){
+            req.user.isInRole('Admin').then(isAdmin =>{
+                if(isAdmin){
+                    next();
+                }else{
+                    res.redirect('/');
+                }
+            })
+        }else{
+            res.redirect('/user/login')
+        }
+    });
+    app.get('/admin/user/all', adminController.user.all);
+
+    //admin panels edit user
+  app.get('/admin/user/edit/:id', adminController.user.editGet);
+  app.post('/admin/user/edit/:id', adminController.user.editPost);
+
+  //admin panels delete user
+    app.get('/admin/user/delete/:id', adminController.user.deleteGet);
+    app.post('/admin/user/delete/:id', adminController.user.deletePost);
 };
 

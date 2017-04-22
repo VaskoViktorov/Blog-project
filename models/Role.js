@@ -8,13 +8,11 @@ let roleSchema = mongoose.Schema({
     users: [{type: ObjectId, ref: 'User'}]
 
 });
-
 const Role = mongoose.model('Role', roleSchema);
 
 module.exports = Role;
-
-module.exports.initialize = () =>{
-    Role.findOne({name: 'User'}).then(role =>{
+module.exports.initialize = () => {
+    Role.findOne({name: 'User'}).then(role => {
         if (!role){
             Role.create({name: 'User'});
         }
@@ -28,3 +26,7 @@ module.exports.initialize = () =>{
 
 
 };
+
+
+
+

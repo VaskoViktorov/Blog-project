@@ -38,6 +38,19 @@ module.exports = (app, config) => {
 
     // This makes the content in the "public" folder accessible for every user.
     app.use(express.static(path.join(config.rootFolder, 'public')));
+
+    //Admin panel
+    app.use((req, res, next) =>{
+        if(req.user){
+            res.locals.user = req.user;
+            req.user.isInRole('Admin').then(isAdmin =>{
+                res.locals.isAdmin = isAdmin;
+                next();
+            })
+        }else{
+            next();
+        }
+    })
 };
 
 
