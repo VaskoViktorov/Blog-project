@@ -8,6 +8,7 @@ const adminController = require('./../controllers/admin/admin');
 module.exports = (app) => {
     //home
     app.get('/', homeController.index);
+    app.get('/category/:id', homeController.listCategoryArticles);
 
     //registration
     app.get('/user/register', userController.registerGet);
@@ -73,5 +74,20 @@ module.exports = (app) => {
   //admin panels delete user
     app.get('/admin/user/delete/:id', adminController.user.deleteGet);
     app.post('/admin/user/delete/:id', adminController.user.deletePost);
+
+    //admin panel - categories
+    app.get('/admin/category/all', adminController.category.all);
+
+    //admin panel - create category
+    app.get('/admin/category/create', adminController.category.createGet);
+    app.post('/admin/category/create', adminController.category.createPost);
+
+    //admin panel - edit category
+    app.get('/admin/category/edit/:id', adminController.category.editGet);
+    app.post('/admin/category/edit/:id', adminController.category.editPost);
+
+    //admin panel - delete category
+    app.get('/admin/category/delete/:id', adminController.category.deleteGet);
+    app.post('/admin/category/delete/:id', adminController.category.deletePost);
 };
 

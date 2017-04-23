@@ -4,6 +4,7 @@ mongoose.Promise = global.Promise;
 require('./../models/Role').initialize();
 require('./../models/User').seedAdmin();
 require('./../models/Article');
+require('./../models/Category');
 
 module.exports = (config) => {
     mongoose.connect(config.connectionString);

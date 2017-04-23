@@ -1,9 +1,20 @@
 const Article = require('mongoose').model('Article');
+const Category = require('mongoose').model('Category');
 const User = require('mongoose').model('User');
 
 module.exports = {
     createGet: (req, res) =>{
-        res.render('article/create');
+        if(!req.isAuthenticated()){
+            let returnUrl = '/article/create';
+            req.session.returnUrl = returnUrl;
+
+            res.redirect('user/login');
+            return;
+        }
+
+        Category.find({}).then(categories =>{
+            res.render('article/create', {categories: categories});
+        })
     },
 
     createPost: (req, res) =>{
@@ -80,6 +91,7 @@ module.exports = {
 
     editGet: (req, res) => {
         let id = req.params.id;
+
         if(!req.isAuthenticated()){
             let returnUrl = `/article/edit/${id}`;
             req.session.returnUrl = returnUrl;
@@ -87,16 +99,20 @@ module.exports = {
             res.redirect('/user/login');
             return;
         }
+
         Article.findById(id).then(article => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if(!isAdmin && !req.user.isAuthor(article)){
                     res.redirect('/');
                     return;
                 }
+                Category.find({}).then(categories =>{
+                    article.categories = categories;
 
-                res.render('article/edit', article)
-            })
-        })
+                    res.render('article/edit', article)
+                });
+            });
+        });
     },
 
     editPost: (req, res) => {
@@ -134,23 +150,68 @@ module.exports = {
                 articleArgs.edit = 'true';
                 articleArgs.editDate = Date.now();
 
-                Article.update({_id: id}, {$set: {title: articleArgs.title, content: articleArgs.content, imagePath: articleArgs.imagePath, edit: articleArgs.edit,editDate: articleArgs.editDate}})
-                    .then(updateStatus => {
-                        res.redirect(`/article/details/${id}`);
-                    })}else{
+                Article.findById(id).populate('category').then(article =>{
+                    if(article.category.id !== articleArgs.category){
+                        article.category.articles.remove(article.id);
+                        article.category.save();
+                    }
+
+                    article.category = articleArgs.category;
+                    article.title = articleArgs.title;
+                    article.content = articleArgs.content;
+                    article.imagePath = articleArgs.imagePath;
+                    article.edit = articleArgs.edit;
+                    article.editDate = articleArgs.editDate;
+
+                    article.save((err)=>{
+                        if(err){
+                            console.log(err.message);
+                        }
+
+                        Category.findById(article.category).then(category =>{
+                            if(category.articles.indexOf(article.id)=== -1){
+                                category.articles.push(article.id);
+                                category.save();
+                            }
+
+                            res.redirect(`/article/details/${id}`);
+                        })
+                    })
+                })
+                }else{
                     errorMsg = 'Only .png, .jpg and .gif are accepted!';
                     res.render('article/edit', {error: errorMsg});
-
                 }
-
-            }
-            else{
+            }else{
                 articleArgs.edit = 'true';
                 articleArgs.editDate = Date.now();
 
-                Article.update({_id: id}, {$set: {title: articleArgs.title, content: articleArgs.content, edit: articleArgs.edit, editDate: articleArgs.editDate}})
-                .then(updateStatus => {
-                    res.redirect(`/article/details/${id}`);
+                Article.findById(id).populate('category').then(article =>{
+                    if(article.category.id !== articleArgs.category){
+                        article.category.articles.remove(article.id);
+                        article.category.save();
+                    }
+
+                    article.category = articleArgs.category;
+                    article.title = articleArgs.title;
+                    article.content = articleArgs.content;
+                    article.edit = articleArgs.edit;
+                    article.editDate = articleArgs.editDate;
+
+                    article.save((err)=>{
+                        if(err){
+                            console.log(err.message);
+                        }
+
+                        Category.findById(article.category).then(category =>{
+                            if(category.articles.indexOf(article.id)=== -1){
+                                category.articles.push(article.id);
+                                category.save();
+                            }
+
+                            res.redirect(`/article/details/${id}`);
+                        })
+                    })
                 })}
         }
     },
@@ -171,8 +232,7 @@ module.exports = {
                 res.redirect('/');
                 return;
             }
-
-            res.render('article/delete', article)
+                res.render('article/delete', article)
         })
     })
     },
