@@ -4,6 +4,7 @@ const articleController = require('./../controllers/article');
 const footerController = require('./../controllers/footer');
 const accountController = require('./../controllers/account');
 const adminController = require('./../controllers/admin/admin');
+const tagController = require('./../controllers/tag');
 
 module.exports = (app) => {
     //home
@@ -89,5 +90,8 @@ module.exports = (app) => {
     //admin panel - delete category
     app.get('/admin/category/delete/:id', adminController.category.deleteGet);
     app.post('/admin/category/delete/:id', adminController.category.deletePost);
+
+    //tag details
+    app.get('/tag/:name', tagController.listArticlesByTag);
 };
 

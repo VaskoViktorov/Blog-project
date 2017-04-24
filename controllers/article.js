@@ -1,6 +1,7 @@
 const Article = require('mongoose').model('Article');
 const Category = require('mongoose').model('Category');
 const User = require('mongoose').model('User');
+const initializeTags = require('./../models/Tag').initializeTags;
 
 module.exports = {
     createGet: (req, res) =>{
@@ -47,13 +48,14 @@ module.exports = {
             if(extension === 'png' || extension === 'jpg' || extension === 'gif'){
 
             let randomChars = require('./../utilities/encryption').generateSalt().substring(0,5).replace(/\//g, 'x');
-
             let finalFileName = `${filename}_${randomChars}.${extension}`;
             image.mv(`./public/images/${finalFileName}`, err =>{
+
                 if(err){
                     console.log(err.message);
                 }
             });
+
             articleArgs.imagePath = `/images/${finalFileName}`;
 
         }else{
@@ -61,21 +63,25 @@ module.exports = {
             res.render('article/create', {error: errorMsg});
             return;
         }}
+
         articleArgs.edit = false;
         articleArgs.author = req.user.id;
+        articleArgs.tags = [];
 
         Article.create(articleArgs).then(article =>{
+
+            let tagNames = articleArgs.tagNames.split(/\s+|,/).filter(tag =>{return tag});
+            initializeTags(tagNames, article.id);
+
             article.prepareInsert();
             res.redirect('/');
-
-
         })
     },
 
     details: (req, res) => {
         let id = req.params.id;
 
-        Article.findById(id).populate('author').then(article =>{
+        Article.findById(id).populate('author tags').then(article =>{
             if(!req.user){
             res.render('article/details', {article: article, isAuthenticated: false});
             return;
@@ -100,7 +106,7 @@ module.exports = {
             return;
         }
 
-        Article.findById(id).then(article => {
+        Article.findById(id).populate('tags').then(article => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if(!isAdmin && !req.user.isAuthor(article)){
                     res.redirect('/');
@@ -108,6 +114,8 @@ module.exports = {
                 }
                 Category.find({}).then(categories =>{
                     article.categories = categories;
+
+                    article.tagNames = article.tags.map(tag => {return tag.name});
 
                     res.render('article/edit', article)
                 });
@@ -149,8 +157,9 @@ module.exports = {
                 articleArgs.imagePath = `/images/${finalFileName}`;
                 articleArgs.edit = 'true';
                 articleArgs.editDate = Date.now();
+                articleArgs.editName = req.user.fullName;
 
-                Article.findById(id).populate('category').then(article =>{
+                Article.findById(id).populate('category tags').then(article =>{
                     if(article.category.id !== articleArgs.category){
                         article.category.articles.remove(article.id);
                         article.category.save();
@@ -162,6 +171,19 @@ module.exports = {
                     article.imagePath = articleArgs.imagePath;
                     article.edit = articleArgs.edit;
                     article.editDate = articleArgs.editDate;
+                    article.editName = articleArgs.editName;
+
+                    let newTagNames = articleArgs.tags.split(/\s+|,/).filter(tag =>{return tag});
+
+                    let oldTags = article.tags.filter(tag =>{
+                        return newTagNames.indexOf(tag.name) === -1;
+                    });
+
+                    for (let tag of oldTags){
+                        tag.deleteArticle(article.id);
+                        article.deleteTag(tag.id);
+                    }
+                    initializeTags(newTagNames, article.id);
 
                     article.save((err)=>{
                         if(err){
@@ -185,8 +207,9 @@ module.exports = {
             }else{
                 articleArgs.edit = 'true';
                 articleArgs.editDate = Date.now();
+                articleArgs.editName = req.user.fullName;
 
-                Article.findById(id).populate('category').then(article =>{
+                Article.findById(id).populate('category tags').then(article =>{
                     if(article.category.id !== articleArgs.category){
                         article.category.articles.remove(article.id);
                         article.category.save();
@@ -197,6 +220,19 @@ module.exports = {
                     article.content = articleArgs.content;
                     article.edit = articleArgs.edit;
                     article.editDate = articleArgs.editDate;
+                    article.editName = articleArgs.editName;
+
+                    let newTagNames = articleArgs.tags.split(/\s+|,/).filter(tag =>{return tag});
+
+                    let oldTags = article.tags.filter(tag =>{
+                        return newTagNames.indexOf(tag.name) === -1;
+                    });
+
+                    for (let tag of oldTags){
+                        tag.deleteArticle(article.id);
+                        article.deleteTag(tag.id);
+                    }
+                    initializeTags(newTagNames, article.id);
 
                     article.save((err)=>{
                         if(err){
@@ -226,12 +262,13 @@ module.exports = {
             res.redirect('/user/login');
             return;
         }
-    Article.findById(id).then(article => {
+    Article.findById(id).populate('category tags').then(article => {
         req.user.isInRole('Admin').then(isAdmin => {
             if(!isAdmin && !req.user.isAuthor(article)){
                 res.redirect('/');
                 return;
             }
+                article.tagNames = article.tags.map(tag => {return tag.name});
                 res.render('article/delete', article)
         })
     })

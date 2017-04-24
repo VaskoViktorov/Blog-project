@@ -13,7 +13,12 @@
                     {{#if imagePath}}
                         <img src="{{this.imagePath}}" width="150" alt="Article Image">
                     {{/if}}
-
+                    <p>
+                        {{#each this.tags }}
+                            <br><a class="btn btn-default btn-xs"
+                               href="/tag/{{this.name}}">{{ this.name }}</a>
+                        {{/each}}
+                    </p>
                     <small class="author">
                         {{this.author.fullName}}
                     </small>

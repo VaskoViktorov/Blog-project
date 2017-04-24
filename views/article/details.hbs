@@ -14,11 +14,11 @@
                 {{/if}}
                 {{#if article.edit}}
                     <small class="author">
-                        <br><p>At {{article.editDate}} the article was edited.</p>
+                        <br><p>At {{article.editDate}} the article was edited by {{article.editName}}.</p>
                     </small>
                 {{else}}
                     <small class="author">
-                        <br><p>At {{article.date}} the article was created.</p>
+                        <br><p>At {{article.date}} the article was created by {{article.author.fullName}}.</p>
                     </small>
                 {{/if}}
                 <small class="author">
@@ -26,6 +26,11 @@
                 </small>
 
                 <footer>
+                    <div class="pull-left">
+                        {{# each article.tags}}
+                            <a class="btn btn-default btn-xs" href="/tag/{{this.name}}">{{ this.name }}</a>
+                        {{/each}}
+                    </div>
                     <div class="pull-right">
                         {{#if isUserAuthorized}}
                         <a class="btn btn-success btn-xs" href="/article/edit/{{article.id}}">Edit &raquo;</a>

@@ -5,6 +5,7 @@ require('./../models/Role').initialize();
 require('./../models/User').seedAdmin();
 require('./../models/Article');
 require('./../models/Category');
+require('./../models/Tag');
 
 module.exports = (config) => {
     mongoose.connect(config.connectionString);
