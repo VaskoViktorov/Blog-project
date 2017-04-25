@@ -13,13 +13,33 @@ module.exports = {
 
     createPost: (req, res) =>{
         let categoryArgs = req.body;
+        let image = req.files.image;
 
         if(!categoryArgs.name){
             let errorMsg = 'Category name cannot be null!';
             categoryArgs.error =errorMsg;
             res.render('admin/category/create', categoryArgs);
+        }else if(!image){
+            let errorMsg = 'Category image cannot be empty!';
+
+            categoryArgs.error =errorMsg;
+            res.render('admin/category/create', categoryArgs);
         }else{
+
+            if(image){
+                let filename = image.name;
+
+                image.mv(`./public/images/${filename}`, err => {
+                    if (err) {
+                        console.log(err.message);
+                    }
+                });
+               categoryArgs.imagePath = `/images/${filename}`;
+
+            }
+
           Category.create(categoryArgs).then(category =>{
+
               res.redirect('/admin/category/all');
           })
         }
@@ -37,14 +57,26 @@ module.exports = {
         let id = req.params.id;
         let editArgs = req.body;
 
-        if(!editArgs.name){
+        if(!editArgs.name) {
             let errorMessage = 'Category name cannot be null!';
 
-            Category.findById(id).then(category =>{
+            Category.findById(id).then(category => {
                 res.render('admin/category/edit', {category: category, error: errorMessage});
             });
         }else{
-            Category.findOneAndUpdate({_id: id}, {name: editArgs.name}).then(category=>{
+
+            let image = req.files.image;
+            if(image){
+                let filename = image.name;
+                image.mv(`./public/images/${filename}`, err => {
+                    if (err) {
+                        console.log(err.message);
+                    }
+                });
+                editArgs.imagePath = `/images/${filename}`;
+
+            }
+            Category.findOneAndUpdate({_id: id}, {name: editArgs.name, imagePath: editArgs.imagePath}).then(category=>{
                 res.redirect('/admin/category/all')
             })
         }

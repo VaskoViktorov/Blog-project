@@ -10,6 +10,14 @@
                             id="name" placeholder="Category Name" name="name" value="{{ category.name }}" disabled>
                         </div>
                     </div>
+                {{#if category.imagePath}}
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="articleTitle">Current Image</label>
+                        <div class="col-sm-6">
+                            <img src="{{category.imagePath}}" width="280" alt="Article Image">
+                        </div>
+                    </div>
+                {{/if}}
                     <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-4">
                             <a class="btn btn-default" href="/admin/category/all">Cancel</a>
