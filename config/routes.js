@@ -49,9 +49,11 @@ module.exports = (app) => {
     //rules page
     app.get('/footer/rules', footerController.rulesGet);
 
+
     //Profile page
     app.get('/account/account', accountController.accountGet);
     app.post('/account/account/:id', accountController.accountPost);
+    app.get('/account/articles/', accountController.articlesGet);
 
     //admin panels
     app.use((req, res, next) => {
@@ -68,9 +70,6 @@ module.exports = (app) => {
         }
     });
     app.get('/admin/user/all', adminController.user.all);
-
-
-
 
     //admin panels edit user
   app.get('/admin/user/edit/:id', adminController.user.editGet);
@@ -95,7 +94,7 @@ module.exports = (app) => {
     app.get('/admin/category/delete/:id', adminController.category.deleteGet);
     app.post('/admin/category/delete/:id', adminController.category.deletePost);
 
-    //tag details
+    //tags details
     app.get('/tag/:name', tagController.listArticlesByTag);
 };
 

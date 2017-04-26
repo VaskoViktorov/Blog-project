@@ -67,7 +67,9 @@ module.exports = {
 
             let image = req.files.image;
             if(image){
+
                 let filename = image.name;
+
                 image.mv(`./public/images/${filename}`, err => {
                     if (err) {
                         console.log(err.message);
@@ -75,10 +77,15 @@ module.exports = {
                 });
                 editArgs.imagePath = `/images/${filename}`;
 
+                Category.findOneAndUpdate({_id: id}, {name: editArgs.name, imagePath: editArgs.imagePath}).then(category=>{
+                    res.redirect('/admin/category/all')
+                })
+            }else{
+                Category.findOneAndUpdate({_id: id}, {name: editArgs.name}).then(category=>{
+                    res.redirect('/admin/category/all')
+                })
             }
-            Category.findOneAndUpdate({_id: id}, {name: editArgs.name, imagePath: editArgs.imagePath}).then(category=>{
-                res.redirect('/admin/category/all')
-            })
+
         }
     },
 

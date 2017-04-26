@@ -9,13 +9,19 @@ module.exports = {
 
     registerPost:(req, res) => {
         let registerArgs = req.body;
+        let reg = /[a-zA-z0-9.!@#$%^&*]+@[a-zA-z0-9.!@#$%^&*]+[.][a-zA-z0-9.!@#$%^&*]+/g;
 
         User.findOne({email: registerArgs.email}).then(user => {
+
             let errorMsg = '';
+
             if (user) {
                 errorMsg = 'User with the same username exists!';
             } else if (registerArgs.password !== registerArgs.repeatedPassword) {
                 errorMsg = 'Passwords do not match!'
+            }else if(!registerArgs.email.match(reg)) {
+
+                errorMsg=('Invalid Email Address');
             }
 
             if (errorMsg) {
@@ -61,7 +67,7 @@ module.exports = {
         let loginArgs = req.body;
         User.findOne({email: loginArgs.email}).then(user => {
             if (!user ||!user.authenticate(loginArgs.password)) {
-                let errorMsg = 'Either username or password is invalid!';
+                let errorMsg = 'Username or password is invalid!';
                 loginArgs.error = errorMsg;
                 res.render('user/login', loginArgs);
                 return;

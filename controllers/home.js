@@ -4,13 +4,13 @@ const User = mongoose.model('User');
 const Category = mongoose.model('Category');
 const Handlebars = require('hbs');
 const Tag = mongoose.model('Tag');
+
 module.exports = {
   index: (req, res) => {
       Category.find({}).then(categories => {
           res.render('home/index', {categories: categories});
       })
   },
-
     listCategoryArticles: (req, res) =>{
       let id = req.params.id;
 
@@ -23,11 +23,10 @@ module.exports = {
                     if(err){
                         console.log(err.message);
                     }
-                })
+                });
               res.render('home/article', {articles: category.articles})
           });
-      }),
-
+      });
           Handlebars.registerHelper('substring', function( string, start, end ) {
 
               let theString = string.substring( start ,end );
