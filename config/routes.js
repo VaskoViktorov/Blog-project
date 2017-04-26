@@ -55,6 +55,9 @@ module.exports = (app) => {
     app.post('/account/account/:id', accountController.accountPost);
     app.get('/account/articles/', accountController.articlesGet);
 
+    //tags details
+    app.get('/tag/:name', tagController.listArticlesByTag);
+
     //admin panels
     app.use((req, res, next) => {
         if(req.isAuthenticated()){
@@ -94,7 +97,6 @@ module.exports = (app) => {
     app.get('/admin/category/delete/:id', adminController.category.deleteGet);
     app.post('/admin/category/delete/:id', adminController.category.deletePost);
 
-    //tags details
-    app.get('/tag/:name', tagController.listArticlesByTag);
+
 };
 
