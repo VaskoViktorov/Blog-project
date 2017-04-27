@@ -2,6 +2,7 @@ const Article = require('mongoose').model('Article');
 const Category = require('mongoose').model('Category');
 const User = require('mongoose').model('User');
 const initializeTags = require('./../models/Tag').initializeTags;
+const Comment = require('./../models/Comment');
 
 module.exports = {
     createGet: (req, res) =>{
@@ -80,10 +81,15 @@ module.exports = {
 
     details: (req, res) => {
         let id = req.params.id;
-
-        Article.findById(id).populate('author tags').then(article =>{
+        let commentsArgs = req.body;
+        Article.findById(id).populate('author tags comments').then(article =>{
             if(!req.user){
             res.render('article/details', {article: article, isAuthenticated: false});
+                Comment.create(commentsArgs.content).then(comment => {
+                    comment.article.push(article);
+                    comment.insert();
+                    comment.save();
+                });
             return;
             }
 
@@ -95,6 +101,41 @@ module.exports = {
         })
     },
 
+    commentGet: (req, res) => {
+        let id = req.params.id;
+
+        Article.findById(id).then(article =>{
+
+            res.render('article/comment', article)
+        })
+    },
+    commentPost: (req, res) =>{
+        let id = req.params.id;
+        let commentsArgs = req.body;
+        if(req.isAuthenticated()){
+        Article.findById(id).then(article =>{
+            User.findById(req.user.id).then(user =>{
+                Comment.create({author: req.user.id ,user: req.user.fullName,article: article.id, content: commentsArgs.content}).then(comment => {
+                    article.comments.push(comment);
+                    user.comments.push(comment);
+                    article.save();
+                    user.save();
+
+                });
+            });
+            res.redirect(`/`);
+        });
+
+    } else{
+            Article.findById(id).then(article =>{
+                Comment.create({user: commentsArgs.user,article: article.id, content: commentsArgs.content}).then(comment => {
+                    article.comments.push(comment);
+                    article.save();
+                });
+                res.redirect(`/`);
+            });
+        }
+    },
     editGet: (req, res) => {
         let id = req.params.id;
 

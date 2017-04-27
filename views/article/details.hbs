@@ -38,6 +38,32 @@
                         {{/if}}
                         <a class="btn btn-default btn-xs" href="/">Back &raquo;</a>
                     </div>
+
+                    <br><br>
+                    <div class="container body-content">
+                            <h2>Comments</h2>
+                            <div class="row">
+                                <table class="table table-striped table-hover ">
+                                    <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Comment</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{#each article.comments}}
+                                        <tr>
+                                            <td>{{ this.user }}</td>
+                                            <td><textarea disabled style="width: 300px; height: 200px;">{{ this.content }}</textarea></td>
+                                            <td><small class="author">{{ this.date }}</small></td>
+                                        </tr>
+                                    {{/each}}
+                                    </tbody>
+                                </table>
+                                <a class="btn btn-default btn-xs" href="/article/comment/{{article.id}}">Comment &raquo;</a>
+                        </div>
+                    </div>
                 </footer>
             </article>
         </div>

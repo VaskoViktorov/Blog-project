@@ -10,6 +10,7 @@ let userSchema = mongoose.Schema(
         passwordHash: {type: String, required: true},
         fullName: {type: String, required: true},
         articles: [{type: ObjectId, ref:'Article'}],
+        comments: [{type: ObjectId, ref:'Comment'}],
         roles: [{type: ObjectId, ref:'Role'}],
         salt: {type: String, required: true}
     }

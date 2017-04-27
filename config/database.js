@@ -6,6 +6,7 @@ require('./../models/User').seedAdmin();
 require('./../models/Article');
 require('./../models/Category');
 require('./../models/Tag');
+require('./../models/Comment');
 
 module.exports = (config) => {
     mongoose.connect(config.connectionString);
@@ -20,10 +21,6 @@ module.exports = (config) => {
         console.log('MongoDB ready!')
 
     });
-
-
-
-
 };
 
 

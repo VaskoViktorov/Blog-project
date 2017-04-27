@@ -29,6 +29,10 @@ module.exports = (app) => {
     // article details
     app.get('/article/details/:id', articleController.details);
 
+    //article comment
+    app.get('/article/comment/:id', articleController.commentGet);
+    app.post('/article/comment/:id', articleController.commentPost);
+
     //edit article
     app.get('/article/edit/:id', articleController.editGet);
     app.post('/article/edit/:id', articleController.editPost);

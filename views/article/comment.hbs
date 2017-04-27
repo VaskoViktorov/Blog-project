@@ -1,0 +1,40 @@
+<div class="container body-content span=8 offset=2">
+    <div class="well">
+
+        <form class="form-horizontal" action="/article/comment/{{id}}" method="post">
+            <fieldset>
+                <legend>Comment</legend>
+
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="articleTitle">Article Title</label>
+                    <div class="col-sm-4 ">
+                        <input type="text" class="form-control" id="articleTitle" placeholder="Article Title" value="{{title}}" name="title" disabled >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="articleTitle">User</label>
+                    <div class="col-sm-4 ">
+                        <input type="text" class="form-control" id="Name" placeholder="Name"
+                            {{#if user}}
+                               value="{{user.fullName}}" disabled
+                               {{else}}
+                               value=""
+                            {{/if}} name="user"  >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" for="articleContent">Content</label>
+                    <div class="col-sm-6">
+                        <textarea class="form-control" id="articleContent" rows="5" name="content" required>{{comment.content}}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-4">
+                        <a href="/" class="btn btn-default">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
