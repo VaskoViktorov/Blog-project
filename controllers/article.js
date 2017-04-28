@@ -87,7 +87,6 @@ module.exports = {
             res.render('article/details', {article: article, isAuthenticated: false});
                 Comment.create(commentsArgs.content).then(comment => {
                     comment.article.push(article);
-                    comment.insert();
                     comment.save();
                 });
             return;
@@ -113,6 +112,7 @@ module.exports = {
         let id = req.params.id;
         let commentsArgs = req.body;
         if(req.isAuthenticated()){
+
         Article.findById(id).then(article =>{
             User.findById(req.user.id).then(user =>{
                 Comment.create({author: req.user.id ,user: req.user.fullName,article: article.id, content: commentsArgs.content}).then(comment => {
@@ -128,10 +128,17 @@ module.exports = {
 
     } else{
             Article.findById(id).then(article =>{
-                Comment.create({user: commentsArgs.user,article: article.id, content: commentsArgs.content}).then(comment => {
+                let authorId = "5902e274738e6a0704798d09";
+                User.findById(authorId).then(user =>{
+                Comment.create({author: authorId,user: commentsArgs.user,article: article.id, content: commentsArgs.content}).then(comment => {
                     article.comments.push(comment);
+                    user.comments.push(comment);
                     article.save();
+                    user.save();
+
                 });
+
+            });
                 res.redirect(`/`);
             });
         }

@@ -86,6 +86,38 @@ module.exports.seedAdmin = () => {
     const User = require('mongoose').model('User');
     const encryption = require('./../utilities/encryption');
 
+    let email1 = 'Anonymous@user.bg';
+    User.findOne({email: email1}).then(user => {
+        if(!user){
+            Role.findOne({name: 'User'}).then(role => {
+                let salt = encryption.generateSalt();
+                let passwordHash = encryption.hashPassword('admin', salt);
+
+                let roles = [];
+                roles.push(role.id);
+
+                let user = {
+                    email: email1,
+                    passwordHash: passwordHash,
+                    fullName: 'Anonymous',
+                    articles: [],
+                    salt: salt,
+                    roles: roles
+                };
+
+                User.create(user).then(user =>{
+                    role.users.push(user.id);
+                    role.save(err =>{
+                        if(err){
+                            console.log(err.message);
+                        } else{
+                            console.log('User seeded successfully')
+                        }
+                    })
+                })
+            })
+        }
+    });
     let email = 'admin@softuni.bg';
     User.findOne({email: email}).then(admin => {
         if(!admin){
@@ -118,6 +150,4 @@ module.exports.seedAdmin = () => {
             })
         }
     })
-}
-
-
+};

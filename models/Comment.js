@@ -9,22 +9,7 @@ let commentSchema = mongoose.Schema({
 });
 
 
+commentSchema.set('versionKey', false );
+const Comment = mongoose.model('Comment', commentSchema);
 
-commentSchema.method({
-    insert:function(){
-        let Article = mongoose.model('Article');
-        for(let article of this.articles){
-            Article.findById(article).then(article =>{
-                if(article.comments.indexOf(this.id)=== -1){
-                    article.comments.push(this.id);
-                    article.save();
-                }
-
-            });
-        }
-    },
-});
-        commentSchema.set('versionKey', false );
-        const Comment = mongoose.model('Comment', commentSchema);
-
-        module.exports = Comment;
+module.exports = Comment;

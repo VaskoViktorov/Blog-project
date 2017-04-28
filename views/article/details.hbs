@@ -43,7 +43,7 @@
                     <div class="container body-content">
                             <h2>Comments</h2>
                             <div class="row">
-                                <table class="table table-striped table-hover ">
+                                <table style="width:100%; border-collapse:separate; border:1px solid #aaa"; class="table table-striped table-hover ">
                                     <thead>
                                     <tr>
                                         <th>Username</th>
@@ -55,7 +55,7 @@
                                     {{#each article.comments}}
                                         <tr>
                                             <td>{{ this.user }}</td>
-                                            <td><textarea disabled style="width: 300px; height: 200px;">{{ this.content }}</textarea></td>
+                                            <td valign="top" style="padding:5px; background:#fff; border-bottom-right-radius: 5px; border-top-right-radius: 5px;"><div style="border-collapse: separate;"><p>{{ this.content }}</p></div></td>
                                             <td><small class="author">{{ this.date }}</small></td>
                                         </tr>
                                     {{/each}}
