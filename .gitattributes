@@ -1,2 +1,2 @@
 $ cat .gitattributes
-Blog-project/public/stylesheets/style.css/* linguist-vendored
+Blog-project/public/stylesheets/* linguist-vendored
