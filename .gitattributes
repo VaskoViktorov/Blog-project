@@ -1,2 +1,3 @@
 $ cat .gitattributes
 Blog-project/public/stylesheets/* linguist-vendored
+node_modules/hbs/* linguist-vendored
